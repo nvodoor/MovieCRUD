@@ -7,8 +7,10 @@ export default class FavoritesScreen extends React.Component {
   };
 
   render() {
-    <ScrollView>
-      
-    </ScrollView>
+    return (
+      <ScrollView>
+
+      </ScrollView>
+    )
   }
 }
