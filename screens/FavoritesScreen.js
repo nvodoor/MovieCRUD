@@ -27,7 +27,14 @@ export default class FavoritesScreen extends React.Component {
   }
 
   removeFavorites(id) {
-    console.log(id);
+    fetch('http://localhost:3000/movie', {
+      method: 'DELETE',
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({id: id})
+    })
+    .then(() => this.getFavorites())
   }
 
   render() {

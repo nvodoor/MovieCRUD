@@ -48,7 +48,7 @@ export default class SearchScreen extends React.Component {
       },
       body: JSON.stringify(favorite)
     })
-    .then(res => console.log(res))
+    .then((res) => console.log("res", res))
   }
 
   render() {

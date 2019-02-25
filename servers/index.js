@@ -34,25 +34,38 @@ app.get('/movie/:name', (req, res) => {
   .catch(err => res.send(404, "movie can't be found"))
 })
 
+app.get('/movies', (req, res) => {
+  const querystring = 'SELECT * from movies';
+  connection.query(querystring, (err, response) => {
+    if (err) {
+      res.status(404).send(err)
+    } else {
+      res.send(response);
+    }
+  })
+})
+
 app.post('/movie', (req, res) => {
   const movie = req.body;
   const querystring = 'INSERT INTO movies (title, date, movieid, overview, image) VALUES (?, ?, ?, ?, ?)';
   connection.query(querystring, [movie.title, movie.release_date, movie.id, movie.overview, movie.poster_path], (err, response) => {
     if (err) {
-      res.send(err)
+      // 409 status code because this is a conflict.
+      res.status(409).send(err)
     } else {
       res.send('Record added.')
     }
   })
 })
 
-app.get('/movies', (req, res) => {
-  const querystring = 'SELECT * from movies';
-  connection.query(querystring, (err, response) => {
+app.delete('/movie', (req, res) => {
+  const id = req.body.id;
+  const querystring = 'DELETE FROM movies WHERE movieid = (?)';
+  connection.query(querystring, [id], (err, response) => {
     if (err) {
-      res.send(err)
+      res.status(404).send(err)
     } else {
-      res.send(response);
+      res.send('Record deleted.')
     }
   })
 })
