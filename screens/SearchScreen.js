@@ -1,5 +1,6 @@
 import React from 'react';
 import { ScrollView, View, StyleSheet, TextInput, Button } from 'react-native';
+import Movie from '../components/Movie.js';
 
 export default class SearchScreen extends React.Component {
   static navigationOptions = {
@@ -28,6 +29,8 @@ export default class SearchScreen extends React.Component {
     .then(res => res.json())
     .then(data => this.setState({
       movies: data
+    }, () => {
+      console.log(this.state.movies)
     }))
   }
 
@@ -42,6 +45,12 @@ export default class SearchScreen extends React.Component {
           } />
           <Button onPress={this.onSubmit} title="Submit"/>
         </View>
+        {movies.map(movie => <Movie title={movie.title} 
+                                    release_date={movie.release_date} 
+                                    overview={movie.overview}
+                                    key={movie.id}
+                                    id={movie.id}/>
+        )}
       </ScrollView>
     );
   }
