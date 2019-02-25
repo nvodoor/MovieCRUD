@@ -15,6 +15,7 @@ export default class SearchScreen extends React.Component {
     }
     this.changeText = this.changeText.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this.addFavorite = this.addFavorite.bind(this);
   }
 
   changeText(text) {
@@ -29,9 +30,18 @@ export default class SearchScreen extends React.Component {
     .then(res => res.json())
     .then(data => this.setState({
       movies: data
-    }, () => {
-      console.log(this.state.movies)
     }))
+  }
+
+  addFavorite(id) {
+    const { movies } = this.state;
+    let favorite;
+    for (let i = 0; i < movies.length; i++) {
+      if (movies[i].id === id) {
+        favorite = movies[i];
+      }
+    }
+    console.log(favorite);
   }
 
   render() {
@@ -49,7 +59,10 @@ export default class SearchScreen extends React.Component {
                                     release_date={movie.release_date} 
                                     overview={movie.overview}
                                     key={movie.id}
-                                    id={movie.id}/>
+                                    id={movie.id}
+                                    url={`https://image.tmdb.org/t/p/w600_and_h900_bestv2/${movie.poster_path}`}
+                                    addFav={this.addFavorite}
+                                    />
         )}
       </ScrollView>
     );
