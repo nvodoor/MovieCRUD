@@ -41,7 +41,14 @@ export default class SearchScreen extends React.Component {
         favorite = movies[i];
       }
     }
-    console.log(favorite);
+    fetch(`http://localhost:3000/movie/`, {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(favorite)
+    })
+    .then(res => console.log(res))
   }
 
   render() {
@@ -61,7 +68,8 @@ export default class SearchScreen extends React.Component {
                                     key={movie.id}
                                     id={movie.id}
                                     url={`https://image.tmdb.org/t/p/w600_and_h900_bestv2/${movie.poster_path}`}
-                                    addFav={this.addFavorite}
+                                    fav={this.addFavorite}
+                                    nameFav={"Add Favorite"}
                                     />
         )}
       </ScrollView>
