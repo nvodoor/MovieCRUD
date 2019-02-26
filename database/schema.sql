@@ -10,6 +10,6 @@ CREATE TABLE movies (
   date VARCHAR(600) NOT NULL,
   movieid INT NOT NULL,
   overview TEXT(21845) NOT NULL,
-  image VARCHAR(600) NOT NULL,
+  image VARCHAR(600),
   UNIQUE(movieid)
 );

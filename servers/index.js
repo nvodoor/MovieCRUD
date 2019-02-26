@@ -51,6 +51,7 @@ app.post('/movie', (req, res) => {
   connection.query(querystring, [movie.title, movie.release_date, movie.id, movie.overview, movie.poster_path], (err, response) => {
     if (err) {
       // 409 status code because this is a conflict.
+      console.log(err)
       res.status(409).send(err)
     } else {
       res.send('Record added.')

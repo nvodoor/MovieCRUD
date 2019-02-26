@@ -1,8 +1,10 @@
 import React from 'react';
 import { ScrollView, View, StyleSheet, TextInput, Button } from 'react-native';
 import Movie from '../components/Movie.js';
+import { connect } from 'react-redux';
+import { submitText, addFavorite } from '../redux/actions.js';
 
-export default class SearchScreen extends React.Component {
+class SearchScreen extends React.Component {
   static navigationOptions = {
     title: 'Search',
   };
@@ -11,11 +13,8 @@ export default class SearchScreen extends React.Component {
     super(props)
     this.state = {
       text: '',
-      movies: [],
     }
     this.changeText = this.changeText.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
-    this.addFavorite = this.addFavorite.bind(this);
   }
 
   changeText(text) {
@@ -24,35 +23,9 @@ export default class SearchScreen extends React.Component {
     })
   }
 
-  onSubmit() {
-    const { text } = this.state;
-    fetch(`http://localhost:3000/movie/:${text}`)
-    .then(res => res.json())
-    .then(data => this.setState({
-      movies: data
-    }))
-  }
-
-  addFavorite(id) {
-    const { movies } = this.state;
-    let favorite;
-    for (let i = 0; i < movies.length; i++) {
-      if (movies[i].id === id) {
-        favorite = movies[i];
-      }
-    }
-    fetch(`http://localhost:3000/movie/`, {
-      method: 'POST',
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(favorite)
-    })
-    .then((res) => console.log("res", res))
-  }
-
   render() {
-    const { text, movies } = this.state;
+    const { text } = this.state;
+    const { movies, submitText, addFavorite } = this.props;
     return (
       <ScrollView style={styles.container}>
         <View style={styles.viewContainer}>
@@ -60,7 +33,7 @@ export default class SearchScreen extends React.Component {
           value={text} 
           onChangeText={(val) => this.changeText(val)
           } />
-          <Button onPress={this.onSubmit} title="Submit"/>
+          <Button onPress={() => submitText(text)} title="Submit"/>
         </View>
         {movies.map(movie => <Movie title={movie.title} 
                                     release_date={movie.release_date} 
@@ -68,7 +41,8 @@ export default class SearchScreen extends React.Component {
                                     key={movie.id}
                                     id={movie.id}
                                     url={`https://image.tmdb.org/t/p/w600_and_h900_bestv2/${movie.poster_path}`}
-                                    fav={this.addFavorite}
+                                    fav={addFavorite}
+                                    movies={movies}
                                     nameFav={"Add Favorite"}
                                     />
         )}
@@ -87,3 +61,22 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   }
 });
+
+const mapStateToProps = state => {
+  return {
+    movies: state.movies
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    submitText: (text) => {
+      dispatch(submitText(text))
+    },
+    addFavorite: (id, movies) => {
+      dispatch(addFavorite(id, movies))
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SearchScreen);

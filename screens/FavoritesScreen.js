@@ -2,47 +2,21 @@ import React from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 import Movie from '../components/Movie.js';
+import { connect } from 'react-redux';
+import { deleteFavorite, getFavorites } from '../redux/actions.js';
 
-export default class FavoritesScreen extends React.Component {
+class FavoritesScreen extends React.Component {
   static navigationOptions = {
     title: 'Favorites',
   };
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      favorites: [],
-    }
-    this.getFavorites = this.getFavorites.bind(this);
-    this.removeFavorites = this.removeFavorites.bind(this);
-  }
-
-  getFavorites() {
-    fetch('http://localhost:3000/movies')
-    .then(res => res.json())
-    .then(data => {
-      this.setState({
-        favorites: data,
-      })})
-  }
-
-  removeFavorites(id) {
-    fetch('http://localhost:3000/movie', {
-      method: 'DELETE',
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({id: id})
-    })
-    .then(() => this.getFavorites())
-  }
-
   render() {
-    const { favorites } = this.state;
+    const { favorites, deleteFavorite, getFavorites } = this.props;
+
     return (
       <ScrollView style={styles.container}>
         <NavigationEvents
-          onWillFocus={() => this.getFavorites()}
+          onWillFocus={() => getFavorites()}
         />
         {favorites.map(favorite => <Movie title={favorite.title}
           release_date={favorite.date}
@@ -50,7 +24,7 @@ export default class FavoritesScreen extends React.Component {
           key={favorite.movieid}
           id={favorite.movieid}
           url={`https://image.tmdb.org/t/p/w600_and_h900_bestv2/${favorite.image}`}
-          fav={this.removeFavorites}
+          fav={deleteFavorite}
           nameFav={"Remove Favorite"}
         />
         )}
@@ -66,3 +40,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#e8dcab'
   }
 })
+
+const mapStateToProps = state => {
+  return {
+    favorites: state.favorites
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    deleteFavorite: (id) => {
+      dispatch(deleteFavorite(id))
+    },
+    getFavorites: () => {
+      dispatch(getFavorites())
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(FavoritesScreen)

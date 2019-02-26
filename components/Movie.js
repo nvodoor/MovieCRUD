@@ -1,7 +1,7 @@
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import React from 'react';
 
-const Movie = ({ title, release_date, overview, id, url, fav, nameFav }) => {
+const Movie = ({ title, release_date, overview, id, url, fav, nameFav, movies }) => {
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
@@ -11,7 +11,7 @@ const Movie = ({ title, release_date, overview, id, url, fav, nameFav }) => {
         <Text style={styles.header}>{title}</Text>
         <Text style={styles.text}>Release Date: {release_date}</Text>
         <Text style={styles.text}>Summary: {overview}</Text>
-        <TouchableOpacity style={styles.button} onPress={() => fav(id)}>
+        <TouchableOpacity style={styles.button} onPress={() => fav(id, movies)}>
           <Text style={styles.buttonText}>{nameFav}</Text>
         </TouchableOpacity>
       </View>
