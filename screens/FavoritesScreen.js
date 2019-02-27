@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { View, FlatList, StyleSheet } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 import Movie from '../components/Movie.js';
 import { connect } from 'react-redux';
@@ -10,25 +10,35 @@ class FavoritesScreen extends React.Component {
     title: 'Favorites',
   };
 
+  keyGet = (item, index) => item.id.toString()
+
+  itemRender = (feedItem) => {
+    const { deleteFavorite } = this.props;
+    const { item, index } = feedItem;
+    return <Movie title={item.title}
+      release_date={item.date}
+      overview={item.overview}
+      key={item.movieid}
+      id={item.movieid}
+      url={`https://image.tmdb.org/t/p/w600_and_h900_bestv2/${item.image}`}
+      fav={deleteFavorite}
+      nameFav={"Remove Favorite"}
+    />
+  }
+
   render() {
-    const { favorites, deleteFavorite, getFavorites } = this.props;
+    const { favorites, getFavorites } = this.props;
 
     return (
-      <ScrollView style={styles.container}>
+      <View style={styles.container}>
         <NavigationEvents
           onWillFocus={() => getFavorites()}
         />
-        {favorites.map(favorite => <Movie title={favorite.title}
-          release_date={favorite.date}
-          overview={favorite.overview}
-          key={favorite.movieid}
-          id={favorite.movieid}
-          url={`https://image.tmdb.org/t/p/w600_and_h900_bestv2/${favorite.image}`}
-          fav={deleteFavorite}
-          nameFav={"Remove Favorite"}
+        <FlatList data={favorites}
+                  keyExtractor={this.keyGet}
+                  renderItem={this.itemRender}
         />
-        )}
-      </ScrollView>
+      </View>
     )
   }
 }
